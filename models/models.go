@@ -1,8 +1,8 @@
-package main
+package models
 
 import (
 	"github.com/Unknwon/com"
-	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
 	"path"
@@ -41,9 +41,13 @@ type Topic struct {
 	ReplyLastUserId int64
 }
 
-func RegiserDB() {
+func RegisterDB() {
 	if !com.IsExist(_DB_NAME) {
-		os.MkDirAll(path.Dir(_DB_NAME, os.ModePerm))
+		os.MkdirAll(path.Dir(_DB_NAME), os.ModePerm)
 		os.Create(_DB_NAME)
 	}
+
+	orm.RegisterModel(new(Category), new(Topic))
+	orm.RegisterDriver(_SQLITE3_DRIVER, orm.DRSqlite)
+	orm.RegisterDataBase("default", _SQLITE3_DRIVER, _DB_NAME, 10)
 }
