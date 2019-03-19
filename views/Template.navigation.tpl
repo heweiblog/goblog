@@ -12,6 +12,15 @@
             <li {{if .IsAbout}}class="active"{{end}}><div class="nav-h6"></div><a href="/about">关于</a></li>
         </ul>
     <!--导航区域开始-->
+		<div class="pull-right">
+			<ul class="nav navbar-nav">
+				{{if .IsLogin}}
+				<li><a href="/login?exit=true">退出登录</a></li>
+				{{else}}
+				<li><a href="/login">管理员登录</a></li>
+				{{end}}	
+			</ul>
+		</div>
 	</div>
 </nav>
 {{end}}
