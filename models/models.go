@@ -51,3 +51,26 @@ func RegisterDB() {
 	orm.RegisterDriver(_SQLITE3_DRIVER, orm.DRSqlite)
 	orm.RegisterDataBase("default", _SQLITE3_DRIVER, _DB_NAME, 10)
 }
+
+func AddCategory(name string) error {
+	o := orm.NewOrm()
+	cate := &Category{Title: name}
+	qs := o.QueryTable("category")
+	err := qs.Filter("title", name).One(cate)
+	if err != nil {
+		return err
+	}
+	_, err = o.Insert(cate)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetAllCategory() (categorys []*Category) {
+	o := orm.NewOrm()
+	cates := make([]*Category, 0)
+	qs := o.QueryTable("category")
+	qs.All(&cates)
+	return cates
+}
