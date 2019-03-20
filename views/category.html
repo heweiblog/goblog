@@ -3,5 +3,31 @@
 </head>
 <body>
 {{template "navigation" .}}	
+<div class="container" style="margin:150px;width:500px">
+	<h1>分类列表</h1>
+	<form method="GET" action="/category">
+		<div class="form-group">
+			<label>分类名称</label>
+			<input id="category" class="form-control" type="" name="CategoryName" placeholder="请输入分类名称" >
+		</div>
+		<button class="btn-default" type="submit" onclick="return checkinput()">添加</button>
+		<button class="btn-default" onclick="return backtohome()">返回</button>
+	</form>
+	<script type="text/javascript">
+		function checkinput(){
+			var name = document.getElementById("category");
+			if (name.value.length == 0){
+				alert("请输入名称");
+				return false;
+			}
+
+			return true;
+		}
+		function backtohome(){
+			window.location.href = "/";
+			return false;
+		}
+	</script>
+</div>
 </body>
 </html>

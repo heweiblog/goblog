@@ -11,4 +11,5 @@ type AboutController struct {
 func (c *AboutController) Get() {
 	c.Data["IsAbout"] = true
 	c.TplName = "about.html"
+	c.Data["IsLogin"] = CheckUser(c.Ctx)
 }

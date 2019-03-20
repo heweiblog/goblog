@@ -11,4 +11,5 @@ type ArchtiveController struct {
 func (c *ArchtiveController) Get() {
 	c.Data["IsArchtive"] = true
 	c.TplName = "archtive.html"
+	c.Data["IsLogin"] = CheckUser(c.Ctx)
 }

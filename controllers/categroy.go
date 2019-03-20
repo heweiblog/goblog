@@ -11,4 +11,5 @@ type CategoryController struct {
 func (c *CategoryController) Get() {
 	c.Data["IsCategory"] = true
 	c.TplName = "category.html"
+	c.Data["IsLogin"] = CheckUser(c.Ctx)
 }
