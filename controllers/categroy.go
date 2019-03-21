@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"goblog/models"
 )
 
@@ -11,10 +12,13 @@ type CategoryController struct {
 
 func (c *CategoryController) Get() {
 	op := c.GetString("op")
+
+	logs.Debug("op:", op)
 	switch op {
 	case "add":
 		name := c.GetString("CategoryName")
 		err := models.AddCategory(name)
+		logs.Debug(name, err)
 		if err != nil {
 			beego.Error(err)
 		}

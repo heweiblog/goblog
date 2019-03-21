@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/Unknwon/com"
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
@@ -55,22 +56,24 @@ func RegisterDB() {
 func AddCategory(name string) error {
 	o := orm.NewOrm()
 	cate := &Category{Title: name}
-	qs := o.QueryTable("category")
-	err := qs.Filter("title", name).One(cate)
-	if err != nil {
-		return err
+
+	err := o.QueryTable("category").Filter("title", name).One(cate)
+	if err == orm.ErrNoRows { // 没有找到记录
+		_, err = o.Insert(cate)
+		if err != nil {
+			return err
+		}
+		return nil
 	}
-	_, err = o.Insert(cate)
-	if err != nil {
-		return err
-	}
-	return nil
+	logs.Debug(err)
+	return err
 }
 
-func GetAllCategory() (categorys []*Category) {
+func GetAllCategory() []*Category {
 	o := orm.NewOrm()
 	cates := make([]*Category, 0)
 	qs := o.QueryTable("category")
 	qs.All(&cates)
+	logs.Debug(cates)
 	return cates
 }
