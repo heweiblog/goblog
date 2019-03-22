@@ -11,6 +11,15 @@ type CategoryController struct {
 }
 
 func (c *CategoryController) Get() {
+	login := CheckUser(c.Ctx)
+	c.Data["IsLogin"] = login
+	c.Data["IsCategory"] = true
+	if !login {
+		c.TplName = "category.html"
+		c.Data["Categorys"] = models.GetAllCategory()
+		return
+	}
+
 	op := c.GetString("op")
 
 	beego.Error("op:", op)
@@ -39,8 +48,6 @@ func (c *CategoryController) Get() {
 		c.Redirect("/category", 301)
 		return
 	}
-	c.Data["IsCategory"] = true
-	c.TplName = "category.html"
-	c.Data["IsLogin"] = CheckUser(c.Ctx)
+	c.TplName = "category_admin.html"
 	c.Data["Categorys"] = models.GetAllCategory()
 }
