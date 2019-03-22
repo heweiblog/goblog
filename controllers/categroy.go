@@ -13,7 +13,7 @@ type CategoryController struct {
 func (c *CategoryController) Get() {
 	op := c.GetString("op")
 
-	logs.Debug("op:", op)
+	beego.Error("op:", op)
 	switch op {
 	case "add":
 		name := c.GetString("CategoryName")
@@ -29,5 +29,5 @@ func (c *CategoryController) Get() {
 	c.Data["IsCategory"] = true
 	c.TplName = "category.html"
 	c.Data["IsLogin"] = CheckUser(c.Ctx)
-	c.Data["Category"] = models.GetAllCategory()
+	c.Data["Categorys"] = models.GetAllCategory()
 }

@@ -11,8 +11,8 @@
 			<label>分类名称</label>
 			<input id="category" class="form-control" type="" name="CategoryName" placeholder="请输入分类名称" >
 		</div>
-		<input type="hidden" name="op" value="add">
-		<button class="btn-default" type="submit" onclick="return checkinput()">添加</button>
+		<input type="hidden" name="op" value="add"/>
+		<button class="btn-default" type="submit" onclick="return checkinput();">添加</button>
 	</form>
 	<script type="text/javascript">
 		function checkinput(){
@@ -29,19 +29,23 @@
 		<thead>
 			<tr>
 				<th>#</th>
-				<th>名称</th>
-				<th>文章</th>
+				<th>分类名称</th>
+				<th>文章数量</th>
+				<th>创建时间</th>
 				<th>操作</th>
 			</tr>
 		</thead>
 		<tbody>
-			{{range .Category}}
-			<th>{{.Id}}</th>
-			<th>{{.Title}}</th>
-			<th>{{.TopicCount}}</th>
-			<th>
-				<a href="/category?op=del&id={{.Id}}">删除</a>
-			</th>	
+			{{range .Categorys}}
+			<tr>
+				<th>{{.Id}}</th>
+				<th>{{.Title}}</th>
+				<th>{{.TopicCount}}</th>
+				<th>{{.CreateTime}}</th>
+				<th>
+					<a href="/category?op=del&id={{.Id}}">删除</a>
+				</th>	
+			</tr>
 			{{end}}
 		</tbody>
 	</table>
