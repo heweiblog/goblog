@@ -17,6 +17,9 @@ func (c *CategoryController) Get() {
 	switch op {
 	case "add":
 		name := c.GetString("CategoryName")
+		if len(name) <= 0 {
+			break
+		}
 		err := models.AddCategory(name)
 		logs.Debug(name, err)
 		if err != nil {
@@ -25,6 +28,16 @@ func (c *CategoryController) Get() {
 		c.Redirect("/category", 301)
 		return
 	case "del":
+		id := c.GetString("id")
+		if len(id) <= 0 {
+			break
+		}
+		err := models.DelCategory(id)
+		if err != nil {
+			beego.Error(err)
+		}
+		c.Redirect("/category", 301)
+		return
 	}
 	c.Data["IsCategory"] = true
 	c.TplName = "category.html"
