@@ -27,7 +27,7 @@ func (c *LoginController) Post() {
 	if beego.AppConfig.String("user") == user && beego.AppConfig.String("pwd") == pwd {
 		maxpage := 0
 		if autologin == "on" {
-			maxpage = 1 << 31
+			maxpage = 1 << 15
 		}
 		c.Ctx.SetCookie("user", user, maxpage, "/")
 		c.Ctx.SetCookie("pwd", pwd, maxpage, "/")

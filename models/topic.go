@@ -13,8 +13,9 @@ type Topic struct {
 	Attachment string
 	CreateTime string
 	//UpdateTime         time.Time `orm:"index"`
-	Views  int `orm:"index"`
-	Author string
+	UpdateTime string
+	Views      int `orm:"index"`
+	Author     string
 	//ReplyTime       time.Time `orm:"index"`
 	ReplyCount      int
 	ReplyLastUserId int
