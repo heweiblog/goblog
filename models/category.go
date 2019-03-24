@@ -9,10 +9,11 @@ import (
 
 // 分类
 type Category struct {
-	Id         int
-	Title      string
-	CreateTime string
-	Views      int `orm:"index"`
+	Id    int
+	Title string
+	//CreateTime string
+	CreateTime time.Time `orm:"index"`
+	Views      int       `orm:"index"`
 	//TopicTime       time.Time
 	TopicCount      int
 	TopicLastUserId int
@@ -24,7 +25,8 @@ func AddCategory(name string) error {
 
 	err := o.QueryTable("category").Filter("title", name).One(cate)
 	if err == orm.ErrNoRows { // 没有找到记录
-		cate.CreateTime = time.Now().Format("2006-01-02 15:04:05")
+		//cate.CreateTime = time.Now().Format("2006-01-02 15:04:05")
+		cate.CreateTime = time.Now()
 		_, err = o.Insert(cate)
 		if err != nil {
 			return err

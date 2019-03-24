@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
+	"goblog/models"
 )
 
 type MainController struct {
@@ -30,4 +31,5 @@ func (c *MainController) Get() {
 	c.Data["IsHome"] = true
 	c.TplName = "index.html"
 	c.Data["IsLogin"] = CheckUser(c.Ctx)
+	c.Data["Topics"] = models.GetAllTopic(true)
 }

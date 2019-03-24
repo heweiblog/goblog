@@ -3,5 +3,15 @@
 </head>
 <body>
 {{template "navigation" .}}
+<div class="container" style="margin-top:100px">
+<div class="container">
+	{{range .Topics}}
+	<div class="page-header">
+		<h1>{{.Title}}</h1>
+		<h6 class="text-muted">文章发表于 {{.CreateTime}}  共有 {{.Views}} 次浏览  {{.ReplyCount}}个评论</h6>
+		<p>{{.Content}}</p>
+	</div>
+	{{end}}
+</div>
 </body>
 </html>

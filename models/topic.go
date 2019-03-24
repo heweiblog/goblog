@@ -14,11 +14,12 @@ type Topic struct {
 	Title      string
 	Content    string `orm:"size(5000)"`
 	Attachment string
-	CreateTime string
-	//UpdateTime         time.Time `orm:"index"`
-	UpdateTime string
-	Views      int `orm:"index"`
-	Author     string
+	//CreateTime string
+	CreateTime time.Time `orm:"index"`
+	UpdateTime time.Time `orm:"index"`
+	//UpdateTime string
+	Views  int `orm:"index"`
+	Author string
 	//ReplyTime       time.Time `orm:"index"`
 	ReplyCount      int
 	ReplyLastUserId int
@@ -30,7 +31,8 @@ func AddTopic(title, content string) error {
 
 	err := o.QueryTable("topic").Filter("title", title).One(topic)
 	if err == orm.ErrNoRows { // 没有找到记录
-		topic.CreateTime = time.Now().Format("2006-01-02 15:04:05")
+		//topic.CreateTime = time.Now().Format("2006-01-02 15:04:05")
+		topic.CreateTime = time.Now()
 		topic.UpdateTime = topic.CreateTime
 		_, err = o.Insert(topic)
 		if err != nil {
@@ -52,12 +54,35 @@ func DelTopic(id string) error {
 	return err
 }
 
-func GetAllTopic() []*Topic {
+func GetTopic(id string) (*Topic, error) {
+	o := orm.NewOrm()
+	topic := new(Topic)
+	i, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, err
+	}
+	err = o.QueryTable("topic").Filter("id", i).One(topic)
+	if err != nil {
+		return nil, err
+	}
+	topic.Views++
+	_, err = o.Update(topic)
+	if err != nil {
+		return nil, err
+	}
+	return topic, nil
+}
+
+func GetAllTopic(sort bool) []*Topic {
 	o := orm.NewOrm()
 	topics := make([]*Topic, 0)
-	qs := o.QueryTable("topic")
-	qs.All(&topics)
-	logs.Debug(topics)
+	if sort {
+		qs := o.QueryTable("topic").OrderBy("-create_time")
+		qs.All(&topics)
+	} else {
+		qs := o.QueryTable("topic")
+		qs.All(&topics)
+	}
 	return topics
 }
 
