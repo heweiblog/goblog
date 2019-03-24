@@ -12,6 +12,11 @@ type CategoryController struct {
 
 func (c *CategoryController) Get() {
 	c.Data["IsCategory"] = true
+	if c.Data["IsLogin"] = CheckUser(c.Ctx); c.Data["IsLogin"] == false {
+		c.Data["Categorys"] = models.GetAllCategory()
+		c.TplName = "category.html"
+		return
+	}
 
 	op := c.GetString("op")
 
@@ -41,7 +46,6 @@ func (c *CategoryController) Get() {
 		c.Redirect("/category", 301)
 		return
 	}
-	c.Data["IsLogin"] = CheckUser(c.Ctx)
 	c.Data["Categorys"] = models.GetAllCategory()
-	c.TplName = "category.html"
+	c.TplName = "category_admin.html"
 }
