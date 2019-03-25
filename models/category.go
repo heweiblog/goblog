@@ -66,10 +66,10 @@ func ModCategory(id, title string) error {
 	return err
 }
 
-func GetCategory(name string) (*Category, error) {
+func GetCategory(id string) (*Category, error) {
 	o := orm.NewOrm()
 	category := new(Category)
-	err := o.QueryTable("category").Filter("title", name).One(category)
+	err := o.QueryTable("category").Filter("id", id).One(category)
 	if err != nil {
 		return nil, err
 	}

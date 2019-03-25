@@ -43,7 +43,8 @@
 				<th>{{.TopicCount}}</th>
 				<th>{{.CreateTime}}</th>
 				<th>
-					<a href="/category?op=del&id={{.Id}}">删除</a>
+					<a href="/category/mod/{{.Id}}">修改</a>
+					<a href="/category/del/{{.Id}}">删除</a>
 				</th>	
 			</tr>
 			{{end}}
