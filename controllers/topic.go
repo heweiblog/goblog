@@ -22,13 +22,25 @@ func (c *TopicController) Post() {
 	if len(title) <= 0 {
 		beego.Error("topic title eror len =", len(title))
 	}
+	category := c.GetString("TopicCategory")
+	if len(category) <= 0 {
+		beego.Error("topic category eror len =", len(category))
+	}
 	content := c.GetString("TopicContent")
 	if len(content) <= 0 {
 		beego.Error("topic content eror len =", len(content))
 	}
-	err := models.AddTopic(title, content)
-	if err != nil {
-		beego.Error(err)
+	id := c.GetString("TopicId")
+	if len(id) <= 0 {
+		err := models.AddTopic(title, category, content)
+		if err != nil {
+			beego.Error(err)
+		}
+	} else {
+		err := models.ModTopic(id, title, category, content)
+		if err != nil {
+			beego.Error(err)
+		}
 	}
 	c.Data["IsLogin"] = CheckUser(c.Ctx)
 	c.Redirect("/topic", 301)
@@ -38,6 +50,20 @@ func (c *TopicController) Add() {
 	c.Data["IsTopic"] = true
 	c.TplName = "topic_add.html"
 	c.Data["IsLogin"] = CheckUser(c.Ctx)
+}
+
+func (c *TopicController) Mod() {
+	c.Data["IsTopic"] = true
+	c.TplName = "topic_mod.html"
+	id := c.Ctx.Input.Params()["0"]
+	topic, err := models.GetTopic(id)
+	if err != nil {
+		beego.Error(err)
+		c.Redirect("/", 302)
+		return
+	}
+	c.Data["Topic"] = topic
+	c.Data["TopicId"] = id
 }
 
 func (c *TopicController) View() {

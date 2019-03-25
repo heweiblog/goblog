@@ -7,9 +7,10 @@
 <div class="container">
 	{{range .Topics}}
 	<div class="page-header">
-		<h1>{{.Title}}</h1>
-		<h6 class="text-muted">文章发表于 {{.CreateTime}}  共有 {{.Views}} 次浏览  {{.ReplyCount}}个评论</h6>
-		<p>{{.Content}}</p>
+		<!--h1>{{.Title}}</h1-->
+		<a href="/topic/view/{{.Id}}"><h1>{{.Title}}</h1></a>
+		<h5 class="text-muted">文章发表于 {{.CreateTime}}  共有 {{.Views}} 次浏览  {{.ReplyCount}}个评论</h5>
+		<p style="margin-bottom: 0rem;white-space:pre-wrap;height: 40px;overflow: hidden">{{.Content}}</p>
 	</div>
 	{{end}}
 </div>

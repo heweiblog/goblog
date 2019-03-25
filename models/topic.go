@@ -13,6 +13,7 @@ type Topic struct {
 	UserId     int
 	Title      string
 	Content    string `orm:"size(5000)"`
+	Category   string
 	Attachment string
 	//CreateTime string
 	CreateTime time.Time `orm:"index"`
@@ -25,10 +26,9 @@ type Topic struct {
 	ReplyLastUserId int
 }
 
-func AddTopic(title, content string) error {
+func AddTopic(title, category, content string) error {
 	o := orm.NewOrm()
-	topic := &Topic{Title: title, Content: content}
-
+	topic := &Topic{Title: title, Category: category, Content: content}
 	err := o.QueryTable("topic").Filter("title", title).One(topic)
 	if err == orm.ErrNoRows { // 没有找到记录
 		//topic.CreateTime = time.Now().Format("2006-01-02 15:04:05")
@@ -71,6 +71,25 @@ func GetTopic(id string) (*Topic, error) {
 		return nil, err
 	}
 	return topic, nil
+}
+
+func ModTopic(id, title, category, content string) error {
+	o := orm.NewOrm()
+	topic := new(Topic)
+	i, err := strconv.Atoi(id)
+	if err != nil {
+		return err
+	}
+	err = o.QueryTable("topic").Filter("id", i).One(topic)
+	if err != nil {
+		return err
+	}
+	topic.Title = title
+	topic.Category = category
+	topic.Content = content
+	topic.UpdateTime = time.Now()
+	_, err = o.Update(topic)
+	return err
 }
 
 func GetAllTopic(sort bool) []*Topic {

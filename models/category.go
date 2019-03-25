@@ -13,7 +13,8 @@ type Category struct {
 	Title string
 	//CreateTime string
 	CreateTime time.Time `orm:"index"`
-	Views      int       `orm:"index"`
+	LastTime   time.Time
+	Views      int `orm:"index"`
 	//TopicTime       time.Time
 	TopicCount      int
 	TopicLastUserId int
@@ -27,6 +28,7 @@ func AddCategory(name string) error {
 	if err == orm.ErrNoRows { // 没有找到记录
 		//cate.CreateTime = time.Now().Format("2006-01-02 15:04:05")
 		cate.CreateTime = time.Now()
+		cate.LastTime = cate.CreateTime
 		_, err = o.Insert(cate)
 		if err != nil {
 			return err
@@ -45,6 +47,33 @@ func DelCategory(id string) error {
 	o := orm.NewOrm()
 	_, err = o.Delete(&Category{Id: i})
 	return err
+}
+
+func ModCategory(id, title string) error {
+	o := orm.NewOrm()
+	category := new(Category)
+	i, err := strconv.Atoi(id)
+	if err != nil {
+		return err
+	}
+	err = o.QueryTable("category").Filter("id", i).One(category)
+	if err != nil {
+		return err
+	}
+	category.Title = title
+	category.LastTime = time.Now()
+	_, err = o.Update(category)
+	return err
+}
+
+func GetCategory(name string) (*Category, error) {
+	o := orm.NewOrm()
+	category := new(Category)
+	err := o.QueryTable("category").Filter("title", name).One(category)
+	if err != nil {
+		return nil, err
+	}
+	return category, err
 }
 
 func GetAllCategory() []*Category {
