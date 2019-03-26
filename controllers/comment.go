@@ -22,6 +22,8 @@ func (c *CommentController) Post() {
 	content := c.GetString("Content")
 	if len(content) <= 0 {
 		beego.Error("comment content eror len =", len(content))
+		c.Redirect("/", 301)
+		return
 	}
 	id := c.GetString("TopicId")
 	if len(id) <= 0 {
