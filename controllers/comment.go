@@ -35,6 +35,10 @@ func (c *CommentController) Post() {
 	if err != nil {
 		beego.Error(err)
 	}
+	err = models.UpdateTopicReplay(id)
+	if err != nil {
+		beego.Error(err)
+	}
 	c.Data["IsLogin"] = CheckUser(c.Ctx)
 	c.Redirect("/topic/view/"+id, 301)
 }

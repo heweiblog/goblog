@@ -73,6 +73,22 @@ func GetTopic(id string) (*Topic, error) {
 	return topic, nil
 }
 
+func UpdateTopicReplay(id string) error {
+	o := orm.NewOrm()
+	topic := new(Topic)
+	i, err := strconv.Atoi(id)
+	if err != nil {
+		return err
+	}
+	err = o.QueryTable("topic").Filter("id", i).One(topic)
+	if err != nil {
+		return err
+	}
+	topic.ReplyCount++
+	_, err = o.Update(topic)
+	return err
+}
+
 func ModTopic(id, title, category, content string) error {
 	o := orm.NewOrm()
 	topic := new(Topic)

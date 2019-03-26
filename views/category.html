@@ -19,7 +19,9 @@
 			{{range .Categorys}}
 			<tr>
 				<th>{{.Id}}</th>
-				<th>{{.Title}}</th>
+				<th>
+					<a href="/category/view/{{.Id}}">{{.Title}}</a>
+				</th>
 				<th>{{.TopicCount}}</th>
 				<th>{{.CreateTime}}</th>
 			</tr>
