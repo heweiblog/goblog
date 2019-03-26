@@ -13,6 +13,7 @@ func init() {
 	beego.Router("/archtive", &controllers.ArchtiveController{})
 	beego.Router("/tag", &controllers.TagController{})
 	beego.Router("/about", &controllers.AboutController{})
+	beego.Router("/comment", &controllers.CommentController{})
 	beego.AutoRouter(&controllers.TopicController{})
 	beego.AutoRouter(&controllers.CategoryController{})
 }

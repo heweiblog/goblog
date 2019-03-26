@@ -79,4 +79,5 @@ func (c *TopicController) View() {
 	}
 	c.Data["Topic"] = topic
 	c.Data["TopicId"] = id
+	c.Data["Comments"] = models.GetAllComment(id, true)
 }

@@ -10,6 +10,56 @@
 	{{end}}
 	<br></br>
 	<p style="margin-bottom: 0rem;white-space:pre-wrap;">{{.Topic.Content}}</p>
+	{{range .Comments}}
+	<div class="page-header">
+		<h4>{{.NickName}}说:</h4>
+		<p>{{.Content}}</p>
+		<h6 class="text-muted">留言发表于：{{.CreateTime}}</h6>
+	</div>
+	{{end}}
+	<h1>我要留言</h1>
+	<form method="POST" action="/comment">
+		<div class="form-group">
+			<label>你的大名</label>
+			<input id="title" class="form-control" type="text" name="NickName" placeholder="填什么都行你喜欢就好">
+		</div>
+		<div class="form-group">
+			<label>电子邮件</label>
+			<input id="category" class="form-control" type="text" name="Email" placeholder="广交天下好友">
+		</div>
+		<div class="form-group">
+			<label>留言内容</label>
+			<textarea id="content" rows="10" cols="30" class="form-control" name="Content" placeholder="请随意发挥你的才华"></textarea>
+		</div>
+		<input type="hidden" name="TopicId" value="{{.TopicId}}"/>
+		<button class="btn-default" type="submit" onclick="return checkinput()">提交</button>
+		<button class="btn-default" onclick="return backtohome()">返回</button>
+	</form>
+	<script type="text/javascript">
+		function checkinput(){
+			var name = document.getElementById("title");
+			if (name.value.length == 0){
+				alert("请输入昵称");
+				return false;
+			}
+			var category = document.getElementById("category");
+			if (category.value.length == 0){
+				alert("请输入电子邮件");
+				return false;
+			}
+			var content = document.getElementById("content");
+			if (content.value.length == 0){
+				alert("请输入内容");
+				return false;
+			}
+
+			return true;
+		}
+		function backtohome(){
+			window.location.href = "/";
+			return false;
+		}
+	</script>
 </div>
 </body>
 </html>
