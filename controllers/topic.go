@@ -11,9 +11,14 @@ type TopicController struct {
 
 func (c *TopicController) Get() {
 	c.Data["IsTopic"] = true
-	c.TplName = "topic.html"
-	c.Data["IsLogin"] = CheckUser(c.Ctx)
 	c.Data["Topics"] = models.GetAllTopic(false)
+	if c.Data["IsLogin"] = CheckUser(c.Ctx); c.Data["IsLogin"] == false {
+		c.TplName = "topic.html"
+		return
+	}
+
+	c.TplName = "topic_admin.html"
+	c.Data["IsLogin"] = CheckUser(c.Ctx)
 }
 
 func (c *TopicController) Post() {
@@ -50,6 +55,17 @@ func (c *TopicController) Add() {
 	c.Data["IsTopic"] = true
 	c.TplName = "topic_add.html"
 	c.Data["IsLogin"] = CheckUser(c.Ctx)
+}
+
+func (c *TopicController) Del() {
+	c.Data["IsTopic"] = true
+	c.Data["IsLogin"] = CheckUser(c.Ctx)
+	id := c.Ctx.Input.Params()["0"]
+	err := models.DelTopic(id)
+	if err != nil {
+		beego.Error(err)
+	}
+	c.Redirect("/topic", 302)
 }
 
 func (c *TopicController) Mod() {

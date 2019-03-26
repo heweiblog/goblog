@@ -49,6 +49,7 @@ func DelCategory(id string) error {
 	return err
 }
 
+// 修改category 其中所有分类文章也得修改
 func ModCategory(id, title string) error {
 	o := orm.NewOrm()
 	category := new(Category)
@@ -56,11 +57,17 @@ func ModCategory(id, title string) error {
 	if err != nil {
 		return err
 	}
+
 	err = o.QueryTable("category").Filter("id", i).One(category)
 	if err != nil {
 		return err
 	}
-	category.Title = title
+
+	if category.Title != title {
+		ModAllTopicByCategory(category.Title, title)
+		category.Title = title
+	}
+
 	category.LastTime = time.Now()
 	_, err = o.Update(category)
 	return err
@@ -74,6 +81,29 @@ func GetCategory(id string) (*Category, error) {
 		return nil, err
 	}
 	return category, err
+}
+
+// 根据title判断分类是否存在
+func CategoryExist(title string) error {
+	o := orm.NewOrm()
+	category := new(Category)
+	return o.QueryTable("category").Filter("title", title).One(category)
+}
+
+func UpdateCategoryTopicCount(title string, add bool) error {
+	o := orm.NewOrm()
+	category := new(Category)
+	err := o.QueryTable("category").Filter("title", title).One(category)
+	if err != nil {
+		return err
+	}
+	if add {
+		category.TopicCount++
+	} else {
+		category.TopicCount--
+	}
+	_, err = o.Update(category)
+	return err
 }
 
 func GetAllCategory() []*Category {

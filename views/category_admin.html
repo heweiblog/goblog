@@ -46,12 +46,19 @@
 				<th>{{.CreateTime}}</th>
 				<th>
 					<a href="/category/mod/{{.Id}}">修改</a>
-					<a href="/category/del/{{.Id}}">删除</a>
+					<a href="/category/del/{{.Id}}" onclick="return del()">删除</a>
 				</th>	
 			</tr>
 			{{end}}
 		</tbody>
 	</table>
+	<script type="text/javascript">
+		function del(){
+			if(!confirm("确认要删除该分类以及属于该分类的所有文章？")){
+				window.event.returnValue = false;
+			}
+		}
+	</script> 
 </div>
 </body>
 </html>

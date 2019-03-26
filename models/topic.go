@@ -27,6 +27,11 @@ type Topic struct {
 }
 
 func AddTopic(title, category, content string) error {
+	if err := CategoryExist(category); err != nil {
+		if err = AddCategory(category); err != nil {
+			return err
+		}
+	}
 	o := orm.NewOrm()
 	topic := &Topic{Title: title, Category: category, Content: content}
 	err := o.QueryTable("topic").Filter("title", title).One(topic)
@@ -38,7 +43,8 @@ func AddTopic(title, category, content string) error {
 		if err != nil {
 			return err
 		}
-		return nil
+		err = UpdateCategoryTopicCount(category, true)
+		return err
 	}
 	logs.Debug(err)
 	return err
@@ -50,7 +56,17 @@ func DelTopic(id string) error {
 		return err
 	}
 	o := orm.NewOrm()
+	topic := new(Topic)
+	err = o.QueryTable("topic").Filter("id", i).One(topic)
+	if err != nil {
+		return err
+	}
+	category := topic.Category
 	_, err = o.Delete(&Topic{Id: i})
+	if err != nil {
+		return err
+	}
+	err = UpdateCategoryTopicCount(category, false)
 	return err
 }
 
@@ -90,6 +106,12 @@ func UpdateTopicReplay(id string) error {
 }
 
 func ModTopic(id, title, category, content string) error {
+	if err := CategoryExist(category); err != nil {
+		if err = AddCategory(category); err != nil {
+			return err
+		}
+	}
+
 	o := orm.NewOrm()
 	topic := new(Topic)
 	i, err := strconv.Atoi(id)
@@ -100,11 +122,36 @@ func ModTopic(id, title, category, content string) error {
 	if err != nil {
 		return err
 	}
+
+	if topic.Category != category {
+		UpdateCategoryTopicCount(topic.Category, false)
+		UpdateCategoryTopicCount(category, true)
+	}
+
 	topic.Title = title
 	topic.Category = category
 	topic.Content = content
 	topic.UpdateTime = time.Now()
 	_, err = o.Update(topic)
+	return err
+}
+
+func ModAllTopicByCategory(oldcate, newcate string) error {
+	o := orm.NewOrm()
+	_, err := o.QueryTable("topic").Filter("category", oldcate).Update(orm.Params{"category": newcate})
+	return err
+}
+
+func GetAllTopicByCategory(category string) []*Topic {
+	o := orm.NewOrm()
+	topics := make([]*Topic, 0)
+	o.QueryTable("topic").Filter("category", category).All(&topics) // 一定要&topics
+	return topics
+}
+
+func DelAllTopicByCategory(category string) error {
+	o := orm.NewOrm()
+	_, err := o.QueryTable("topic").Filter("category", category).Delete()
 	return err
 }
 

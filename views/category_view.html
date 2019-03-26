@@ -1,0 +1,36 @@
+{{template "header" .}}	
+	<title>分类</title>
+</head>
+<body>
+{{template "navigation" .}}	
+<div class="container" style="margin-top:100px">
+	<h1>{{.Category.Title}}</h1>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>编号</th>
+				<th>文章名称</th>
+				<th>最后更新</th>
+				<th>浏览数</th>
+				<th>回复数</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range .Topics}}
+			<tr>
+				<th>{{.Id}}</th>
+				<th>
+					<a href="/topic/view/{{.Id}}">{{.Title}}</a>
+				</th>
+				<th>{{.UpdateTime}}</th>
+				<th>{{.Views}}</th>
+				<th>{{.ReplyCount}}</th>
+			</tr>
+			{{end}}
+		</tbody>
+	</table>
+</div>
+</body>
+</html>
+
+

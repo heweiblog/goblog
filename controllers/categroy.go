@@ -72,11 +72,38 @@ func (c *CategoryController) Mod() {
 
 func (c *CategoryController) Del() {
 	id := c.Ctx.Input.Params()["0"]
-	beego.Error(id)
-	err := models.DelCategory(id)
+	cate, err := models.GetCategory(id)
+	if err != nil {
+		beego.Error(err)
+		c.Redirect("/category", 302)
+		return
+	}
+
+	err = models.DelCategory(id)
 	if err != nil {
 		beego.Error(err)
 	}
+	err = models.DelAllTopicByCategory(cate.Title)
+	if err != nil {
+		beego.Error(err)
+	}
+
 	c.Redirect("/category", 301)
 	return
+}
+
+func (c *CategoryController) View() {
+	c.Data["IsCategory"] = true
+	c.Data["IsLogin"] = CheckUser(c.Ctx)
+	c.TplName = "category_view.html"
+	id := c.Ctx.Input.Params()["0"]
+	cate, err := models.GetCategory(id)
+	if err != nil {
+		beego.Error(err)
+		c.Redirect("/category", 302)
+		return
+	}
+
+	c.Data["Category"] = cate
+	c.Data["Topics"] = models.GetAllTopicByCategory(cate.Title)
 }
