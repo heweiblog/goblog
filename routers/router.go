@@ -14,6 +14,7 @@ func init() {
 	beego.Router("/tag", &controllers.TagController{})
 	beego.Router("/about", &controllers.AboutController{})
 	beego.Router("/comment", &controllers.CommentController{})
+	beego.Router("/404", &controllers.NotFoundController{})
 	beego.AutoRouter(&controllers.TopicController{})
 	beego.AutoRouter(&controllers.CategoryController{})
 }

@@ -10,6 +10,7 @@
             <li {{if .IsArchtive}}class="active"{{end}}><div class="nav-h4"></div><a href="/archtive">归档</a></li>
             <li {{if .IsTag}}class="active"{{end}}><div class="nav-h5"></div><a href="/tag">标签</a></li>
             <li {{if .IsAbout}}class="active"{{end}}><div class="nav-h6"></div><a href="/about">关于</a></li>
+            <li><div class="nav-h6"></div><a href="/404">公益404</a></li>
         </ul>
     <!--导航区域开始-->
 		<div class="pull-right">
