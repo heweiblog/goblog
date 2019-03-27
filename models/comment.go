@@ -37,6 +37,12 @@ func GetAllComment(id string, sort bool) []*Comment {
 	return comments
 }
 
+func DelComment(id string) error {
+	o := orm.NewOrm()
+	_, err := o.QueryTable("comment").Filter("topic_id", id).Delete()
+	return err
+}
+
 func init() {
 	orm.RegisterModel(new(Comment))
 }

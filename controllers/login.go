@@ -31,7 +31,10 @@ func (c *LoginController) Post() {
 		}
 		c.Ctx.SetCookie("user", user, maxpage, "/")
 		c.Ctx.SetCookie("pwd", pwd, maxpage, "/")
+		c.Redirect("/", 302)
+		return
 	}
-	c.Redirect("/", 302)
+	c.TplName = "login_failed.html"
+	//c.Redirect("/", 302)
 	return
 }

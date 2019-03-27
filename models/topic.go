@@ -151,7 +151,13 @@ func GetAllTopicByCategory(category string) []*Topic {
 
 func DelAllTopicByCategory(category string) error {
 	o := orm.NewOrm()
-	_, err := o.QueryTable("topic").Filter("category", category).Delete()
+	qs := o.QueryTable("topic").Filter("category", category)
+	topics := make([]*Topic, 0)
+	qs.All(&topics)
+	for _, v := range topics {
+		DelComment(strconv.Itoa(v.Id))
+	}
+	_, err := qs.Delete()
 	return err
 }
 
@@ -166,6 +172,20 @@ func GetAllTopic(sort bool) []*Topic {
 		qs.All(&topics)
 	}
 	return topics
+}
+
+func GetAllTopicByView() ([]*Topic, int, int, int) {
+	o := orm.NewOrm()
+	topics := make([]*Topic, 0)
+	qs := o.QueryTable("topic").OrderBy("-views")
+	qs.All(&topics)
+	view := 0
+	reply := 0
+	for _, v := range topics {
+		view += v.Views
+		reply += v.ReplyCount
+	}
+	return topics, len(topics), view, reply
 }
 
 func init() {
