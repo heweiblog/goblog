@@ -17,4 +17,5 @@ func init() {
 	beego.Router("/404", &controllers.NotFoundController{})
 	beego.AutoRouter(&controllers.TopicController{})
 	beego.AutoRouter(&controllers.CategoryController{})
+	beego.AutoRouter(&controllers.TagController{})
 }

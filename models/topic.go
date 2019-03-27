@@ -4,6 +4,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -24,9 +25,10 @@ type Topic struct {
 	//ReplyTime       time.Time `orm:"index"`
 	ReplyCount      int
 	ReplyLastUserId int
+	Labels          []*Label `orm:"rel(m2m)"`
 }
 
-func AddTopic(title, category, content string) error {
+func AddTopic(title, category, label, content string) error {
 	if err := CategoryExist(category); err != nil {
 		if err = AddCategory(category); err != nil {
 			return err
@@ -43,6 +45,15 @@ func AddTopic(title, category, content string) error {
 		if err != nil {
 			return err
 		}
+
+		o.QueryTable("topic").Filter("title", title).One(topic)
+		labels := strings.Split(label, " ")
+		for _, v := range labels {
+			if !LabelExist(v) {
+				AddLabel(topic, v)
+			}
+		}
+
 		err = UpdateCategoryTopicCount(category, true)
 		return err
 	}
@@ -67,6 +78,7 @@ func DelTopic(id string) error {
 		return err
 	}
 	err = UpdateCategoryTopicCount(category, false)
+	//err = UpdateLabelTopicCount(category, false)
 	return err
 }
 
@@ -105,7 +117,7 @@ func UpdateTopicReplay(id string) error {
 	return err
 }
 
-func ModTopic(id, title, category, content string) error {
+func ModTopic(id, title, category, label, content string) error {
 	if err := CategoryExist(category); err != nil {
 		if err = AddCategory(category); err != nil {
 			return err
@@ -126,6 +138,13 @@ func ModTopic(id, title, category, content string) error {
 	if topic.Category != category {
 		UpdateCategoryTopicCount(topic.Category, false)
 		UpdateCategoryTopicCount(category, true)
+	}
+
+	labels := strings.Split(label, " ")
+	for _, v := range labels {
+		if !LabelExist(v) {
+			AddLabel(topic, v)
+		}
 	}
 
 	topic.Title = title

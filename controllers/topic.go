@@ -31,18 +31,22 @@ func (c *TopicController) Post() {
 	if len(category) <= 0 {
 		beego.Error("topic category eror len =", len(category))
 	}
+	label := c.GetString("TopicLabel")
+	if len(label) <= 0 {
+		beego.Error("topic label eror len =", len(label))
+	}
 	content := c.GetString("TopicContent")
 	if len(content) <= 0 {
 		beego.Error("topic content eror len =", len(content))
 	}
 	id := c.GetString("TopicId")
 	if len(id) <= 0 {
-		err := models.AddTopic(title, category, content)
+		err := models.AddTopic(title, category, label, content)
 		if err != nil {
 			beego.Error(err)
 		}
 	} else {
-		err := models.ModTopic(id, title, category, content)
+		err := models.ModTopic(id, title, category, label, content)
 		if err != nil {
 			beego.Error(err)
 		}
@@ -78,6 +82,7 @@ func (c *TopicController) Mod() {
 		c.Redirect("/", 302)
 		return
 	}
+	c.Data["Labels"] = models.GetLabel(id)
 	c.Data["Topic"] = topic
 	c.Data["TopicId"] = id
 }
