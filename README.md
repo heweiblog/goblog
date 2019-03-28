@@ -28,11 +28,6 @@ github.com/mattn/go-sqlite3
 
 部分效果如下
 
-![首页](https://github.com/heweiblog/goblog/tree/master/static/img/home.png?raw=true)
-
-![分类](https://github.com/heweiblog/goblog/tree/master/static/img/category.png?raw=true)
-
 ![文章](https://github.com/heweiblog/goblog/tree/master/static/img/topic.png?raw=true)
 
-![标签](https://github.com/heweiblog/goblog/tree/master/static/img/tag.png?raw=true)
 
