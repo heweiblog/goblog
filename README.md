@@ -24,6 +24,6 @@ github.com/mattn/go-sqlite3
 
 文章
 
-<img src="./static/img/topic.png" width="400px" />
+<img src="./static/img/topic.png" width="900px" />
 
 
