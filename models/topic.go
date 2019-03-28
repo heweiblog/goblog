@@ -38,7 +38,6 @@ func AddTopic(title, category, label, content string) error {
 	topic := &Topic{Title: title, Category: category, Content: content}
 	err := o.QueryTable("topic").Filter("title", title).One(topic)
 	if err == orm.ErrNoRows { // 没有找到记录
-		//topic.CreateTime = time.Now().Format("2006-01-02 15:04:05")
 		topic.CreateTime = time.Now()
 		topic.UpdateTime = topic.CreateTime
 		_, err = o.Insert(topic)
@@ -50,7 +49,10 @@ func AddTopic(title, category, label, content string) error {
 		labels := strings.Split(label, " ")
 		for _, v := range labels {
 			if !LabelExist(v) {
-				AddLabel(topic, v)
+				err = AddLabelAndTopic(topic, v)
+				if err != nil {
+					logs.Error(err)
+				}
 			}
 		}
 
@@ -62,34 +64,30 @@ func AddTopic(title, category, label, content string) error {
 }
 
 func DelTopic(id string) error {
-	i, err := strconv.Atoi(id)
-	if err != nil {
-		return err
-	}
 	o := orm.NewOrm()
 	topic := new(Topic)
-	err = o.QueryTable("topic").Filter("id", i).One(topic)
+	err := o.QueryTable("topic").Filter("id", id).One(topic)
 	if err != nil {
 		return err
 	}
 	category := topic.Category
-	_, err = o.Delete(&Topic{Id: i})
+
+	err = UpdateLabelTopicCount(id)
+	if err != nil {
+		return err
+	}
+	_, err = o.Delete(topic)
 	if err != nil {
 		return err
 	}
 	err = UpdateCategoryTopicCount(category, false)
-	//err = UpdateLabelTopicCount(category, false)
 	return err
 }
 
 func GetTopic(id string) (*Topic, error) {
 	o := orm.NewOrm()
 	topic := new(Topic)
-	i, err := strconv.Atoi(id)
-	if err != nil {
-		return nil, err
-	}
-	err = o.QueryTable("topic").Filter("id", i).One(topic)
+	err := o.QueryTable("topic").Filter("id", id).One(topic)
 	if err != nil {
 		return nil, err
 	}
@@ -104,11 +102,7 @@ func GetTopic(id string) (*Topic, error) {
 func UpdateTopicReplay(id string) error {
 	o := orm.NewOrm()
 	topic := new(Topic)
-	i, err := strconv.Atoi(id)
-	if err != nil {
-		return err
-	}
-	err = o.QueryTable("topic").Filter("id", i).One(topic)
+	err := o.QueryTable("topic").Filter("id", id).One(topic)
 	if err != nil {
 		return err
 	}
@@ -126,11 +120,7 @@ func ModTopic(id, title, category, label, content string) error {
 
 	o := orm.NewOrm()
 	topic := new(Topic)
-	i, err := strconv.Atoi(id)
-	if err != nil {
-		return err
-	}
-	err = o.QueryTable("topic").Filter("id", i).One(topic)
+	err := o.QueryTable("topic").Filter("id", id).One(topic)
 	if err != nil {
 		return err
 	}
@@ -140,12 +130,7 @@ func ModTopic(id, title, category, label, content string) error {
 		UpdateCategoryTopicCount(category, true)
 	}
 
-	labels := strings.Split(label, " ")
-	for _, v := range labels {
-		if !LabelExist(v) {
-			AddLabel(topic, v)
-		}
-	}
+	//暂时不支持修改标签
 
 	topic.Title = title
 	topic.Category = category
@@ -175,6 +160,7 @@ func DelAllTopicByCategory(category string) error {
 	qs.All(&topics)
 	for _, v := range topics {
 		DelComment(strconv.Itoa(v.Id))
+		UpdateLabelTopicCount(strconv.Itoa(v.Id))
 	}
 	_, err := qs.Delete()
 	return err

@@ -11,9 +11,23 @@ type TagController struct {
 
 func (c *TagController) Get() {
 	c.Data["IsTag"] = true
-	c.TplName = "tag.html"
-	c.Data["IsLogin"] = CheckUser(c.Ctx)
 	c.Data["Labels"] = models.GetAllLabel(false)
+	if c.Data["IsLogin"] = CheckUser(c.Ctx); c.Data["IsLogin"] == false {
+		c.TplName = "tag.html"
+		return
+	}
+	c.TplName = "tag_admin.html"
+}
+
+func (c *TagController) Del() {
+	c.Data["IsTag"] = true
+	c.Data["IsLogin"] = CheckUser(c.Ctx)
+	id := c.Ctx.Input.Params()["0"]
+	err := models.DelLabel(id)
+	if err != nil {
+		beego.Error(err)
+	}
+	c.Redirect("/tag", 302)
 }
 
 func (c *TagController) View() {
