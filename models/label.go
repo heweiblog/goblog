@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	"strconv"
@@ -122,17 +121,14 @@ func UpdateLabelTopicCount(tid string) error {
 	}
 	logs.Debug("----------", num, err, topic)
 	for _, v := range labels {
-		fmt.Println("D----------label:", v)
 		v.TopicCount--
 		if v.TopicCount <= 0 {
 			m2m := o.QueryM2M(v, "topics")
 			num, err = m2m.Remove(topic)
-			fmt.Println("D----------", num, err)
 			if err != nil {
 				logs.Error(err)
 			}
 			num, err = o.Delete(v)
-			fmt.Println("D----------", num, err)
 			if err != nil {
 				logs.Error(err)
 			}
