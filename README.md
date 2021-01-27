@@ -13,7 +13,7 @@
 
 使用-b参数启在后台
 
-# 感谢:
+# 使用库:
 
 github.com/astaxie/beego
 
